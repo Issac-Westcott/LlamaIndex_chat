@@ -99,7 +99,7 @@ pnpm install
 pnpm run dev
 ```
 
-访问 `http://localhost:3000` 查看应用。
+访问 `http://localhost:3001` 查看应用。
 
 ## ⚙️ 配置
 
