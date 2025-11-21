@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: llamaindex-chat-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL:-https://aihubmix.com/v1}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-f8QpOUajGsi5u5oGE15f2aB93822423694059b8f93083721}
+      - MODEL_NAME=${MODEL_NAME:-gpt-5-mini}
+      - TEMPERATURE=${TEMPERATURE:-0.5}
+      - MAX_TOKENS=${MAX_TOKENS:-4000}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - llamaindex-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: llamaindex-chat-frontend
+    ports:
+      - "3001:3000"  # 映射到 3001 端口，避免与本地开发服务冲突
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - llamaindex-network
+
+networks:
+  llamaindex-network:
+    driver: bridge
+

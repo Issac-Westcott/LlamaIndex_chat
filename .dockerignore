@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Frontend (for backend Dockerfile)
+frontend/
+node_modules/
+
+# Cloudflare
+start_cloudflared*.sh
+TUNNEL_INFO.md
+CLOUDFLARE_SETUP.md
+
+# Format scripts
+format.sh
+format.py
+
+# Lock files (keep uv.lock for backend)
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+
