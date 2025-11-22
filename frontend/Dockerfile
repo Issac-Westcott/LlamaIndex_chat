@@ -19,10 +19,14 @@ COPY . .
 # 构建阶段
 FROM base AS builder
 
+# 设置构建时环境变量
+ARG NEXT_PUBLIC_API_URL=http://backend:8000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 # 确保 public 目录存在（Next.js 需要）
 RUN mkdir -p public
 
-# 构建 Next.js 应用
+# 构建 Next.js 应用（standalone 模式）
 RUN pnpm run build
 
 # 生产阶段
@@ -31,25 +35,16 @@ FROM node:20-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+# 运行时环境变量
+ENV NEXT_PUBLIC_API_URL=http://backend:8000
 
-# 安装 pnpm
-RUN npm install -g pnpm
-
-# 复制必要的文件
-COPY --from=builder /app/package.json /app/pnpm-lock.yaml ./
-COPY --from=builder /app/.next ./.next
-# 复制 public 目录（现在肯定存在）
+# 复制 standalone 输出
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/tailwind.config.js ./
-COPY --from=builder /app/postcss.config.js ./
-COPY --from=builder /app/tsconfig.json ./
 
-# 安装生产依赖
-RUN pnpm install --frozen-lockfile --prod
-
-# 暴露端口
+# 暴露端口（容器内部监听 3000）
 EXPOSE 3000
 
 # 启动命令
-CMD ["pnpm", "start"]
+CMD ["node", "server.js"]

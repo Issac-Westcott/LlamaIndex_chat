@@ -3,9 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   async rewrites() {
-    // 从环境变量读取后端地址，默认 localhost（开发环境）
-    // 生产环境通过环境变量设置：NEXT_PUBLIC_API_URL=https://your-backend-url.com
+    // 运行时从环境变量读取后端地址
+    // Docker 环境使用服务名 backend:8000
+    // 开发环境使用 localhost:8000
     const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    console.log('Backend URL:', backendUrl);
     return [
       {
         source: '/api/:path*',
@@ -13,6 +15,8 @@ const nextConfig = {
       },
     ];
   },
+  // 确保输出为 standalone 模式以便在 Docker 中运行
+  output: 'standalone',
 };
 
 module.exports = nextConfig;
